@@ -30,7 +30,32 @@
 
     // var socket = new WebSocket(
     //     'wss://<your url here>/ws/draw');
+    var socket = new WebSocket('wss://p3-websockets-WilliamCheng12345-williamcheng1998980950.codeanyapp.com/ws/draw');
 
+// triggered when receiving a message from the server
+  var path = new paper.Path();
+  var path2 = new paper.Path(); 
+socket.onmessage = function(receivedMessage) {
+	// do something when you receive a message
+  path2.strokeColor = "black";
+  var value = JSON.parse(receivedMessage.data); 
+    path2.add(new paper.Point(value[1], value[2]));
+}
+
+// use when sending a message to the server
+// to be broadcasted to all clients, please add a delay
+
+  tool.onMouseMove = function(event){
+    path.strokeColor = "black";
+    path.add(event.point);
+    socket.send(JSON.stringify(event.point));
+  }
+
+
+// notify console if socket closes unexpectedly
+socket.onclose = function(e) {
+    console.error('Chat socket closed unexpectedly');
+};
 
 </script>
 </html>
