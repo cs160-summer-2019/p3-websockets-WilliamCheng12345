@@ -10,72 +10,100 @@
     <script type="text/javascript" src="{% static 'draw/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
 
-    <style type="text/css">
+    <style>
+       #cereal {
+  display: flex;
+  flex-direction: column;       
+}
+      input[type=checkbox] {
+        width:50px; height:50px;
+      }
+        .header {
+  padding: 60px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+  font-size: 30px;
+}
+    
+      #Submit{
+         width:200px; height:100px; margin: 30px; 
+      }
+      #Timer{
+        width:200px; height:100px; margin: 30px;
+      }
+      #seconds{
+             font-size: 100px;
+        margin-left: 80px; 
+        color: blue; 
+        font-weight: bold;
+      }
+      
     </style>
-
+      <!--The next line is a code received from Stack Overflow for making an iamge into a background.  -->
+  <img src="https://d1fywv0iz2cv2w.cloudfront.net/videos/burpy-process.jpg" style='position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-1;'>
 </head>
 <body>
-    <!-- You may change the dimensions of this canvas -->
-    <canvas id="myCanvas" width="750px" height="750px"></canvas>
+     <div class="header">
+  <h1>Democra-groceries</h1>
+  <p>Grocery Assistant</p>
+  </div>
+  <div id="cereal">
+   <input type="checkbox" id="Frosted Flakes" name="Frosted Flakes">
+  <img src="https://jetimages.jetcdn.net/md5/dca75c9bd81c3ad16229301f391d4c07?odnBound=576"
+          height = "300" width= "300"> 
+  
+   <input type="checkbox" id="Fruity Pebbles" name="Fruity Pebbles">
+  <img src="https://images-na.ssl-images-amazon.com/images/I/91OleINga6L._SY355_.jpg"
+        height = "300" width= "300"> 
+  
+   <input type="checkbox" id="Reeses Puffs" name="Reeses Puffs">
+    <img src="https://images-na.ssl-images-amazon.com/images/I/51TCxT0oVyL.jpg"
+        height="300" width= "300">
+      
+   <input type="checkbox" id="Cheerios" name="Cheerios">
+       <img src="http://www.grocery.com/store/image/catalog/cheerios/cheerios-breakfast-cereal-gluten-free-12-oz-cereal-B07H4BSWDM.jpg"
+        height="300" width= "300">
+  </div>
+     
+    
+ <script type="text/javascript">
+            var clock;
+            function timer () {
+                clearInterval(clock);
+                var start = new Date().getTime();
+                clock = setInterval(function() {
+                    var seconds = Math.round((new Date().getTime() - start) / 1000);
+                    if (seconds > 0)
+                        document.getElementById('seconds').innerHTML = seconds;
+                }, 1000);
+            }
+        </script>
+        <button id="Timer" onclick="timer();">Timer</button>
+        <p id="seconds"> </p>
+ 
+   <button id="Submit">Submit</button>
 </body>
 <script>
-
-    // setting up the canvas and one paper tool
-    var canvas = document.getElementById('myCanvas');
-    paper.setup(canvas);
-    var tool = new paper.Tool();
-
-    // getting the URL (you may want to use for Exercise 3)
-    var url = window.location.href;
-    // var socket = new WebSocket(
-    //     'wss://<your url here>/ws/draw');
-    var socket = new WebSocket('wss://p3-websockets-WilliamCheng12345-williamcheng1998980950.codeanyapp.com/ws/draw');
-
-// triggered when receiving a message from the server
-  var path = new paper.Path();
-  var path2 = new paper.Path();
-  var color1 = new paper.Color(Math.random(), Math.random(), Math.random()); 
-   path.strokeColor = color1;
-socket.onmessage = function(receivedMessage) {
-	// do something when you receive a message){
-    if(String(url) == ("https://p3-websockets-williamcheng12345-williamcheng1998980950.codeanyapp.com/draw/?size=large")){
-       path2.strokeColor = color1;
-      console.log(receivedMessage);
-      var value = JSON.parse(receivedMessage.data); 
-      path2.add(new paper.Point(value[1], value[2]))
-    }
+  var socket = new WebSocket('wss://p3-websockets-WilliamCheng12345-williamcheng1998980950.codeanyapp.com/ws/draw');
+  var array = [0,0,0,0]; 
+  
+  document.getElementById('Submit').onclick = function() {
+    if(document.getElementById("Frosted Flakes").checked == true){
+      array[0] += 1;
+}
+     if(document.getElementById("Fruity Pebbles").checked == true){
+       array[1] += 1; 
+}
+     if(document.getElementById("Reeses Puffs").checked == true){
+       array[2] += 1; 
 }
 
-
-// use when sending a message to the server
-// to be broadcasted to all clients, please add a delay
- if(String(url) == ("https://p3-websockets-williamcheng12345-williamcheng1998980950.codeanyapp.com/draw/?size=small")){
-  tool.onMouseMove = function(event){
-    path.add(event.point);
-    socket.send(JSON.stringify(event.point));
-      
-window.addEventListener("devicemotion", (event) => {
-  if(event.acceleration.y > 9){
-     path.remove();
-     path = new paper.Path();
-     }
-});
-  }
-  window.addEventListener("deviceorientation", (event) =>
-{
- // Device rotation around Z-axis, in degrees
-    if(Math.abs(event.gamma) > 20){
-        path.strokeColor = new paper.Color(Math.random(), Math.random(), Math.random()); ;
-       }
-});
-    } 
-
-
-// notify console if socket closes unexpectedly
-socket.onclose = function(e) {
-    console.error('Chat socket closed unexpectedly');
+     if(document.getElementById("Cheerios").checked == true){
+       array[3] += 1; 
+}
+    socket.send(array); 
 };
-
   
 </script>
 </html>

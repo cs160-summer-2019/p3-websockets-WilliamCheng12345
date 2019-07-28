@@ -1,0 +1,102 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>P4 Drawing</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'draw/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <script type="text/javascript" src="{% static 'draw/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
+
+    <style>
+      .header {
+  padding: 60px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+  font-size: 30px;
+}
+    </style>
+      <!--The next line is a code received from Stack Overflow for making an iamge into a background.  -->
+  <img src="https://d1fywv0iz2cv2w.cloudfront.net/videos/burpy-process.jpg" style='position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-1;'>
+</head>
+  
+<script>
+  var total = [0,0,0,0]; 
+  if(localStorage.getItem("total[0]") == null){
+     localStorage.setItem("total[0]", total[0]);
+     }
+    total[0] = parseInt(localStorage.getItem("total[0]"));
+  
+  if(localStorage.getItem("total[1]") == null){
+     localStorage.setItem("total[1]", total[1]);
+     }
+    total[1] = parseInt(localStorage.getItem("total[1]"));
+  
+    if(localStorage.getItem("total[2]") == null){
+     localStorage.setItem("total[2]", total[2]);
+     }
+    total[2] = parseInt(localStorage.getItem("total[2]"));
+  
+    if(localStorage.getItem("total[3]") == null){
+     localStorage.setItem("total[3]", total[3]);
+     }
+    total[3] = parseInt(localStorage.getItem("total[3]"));
+  
+  
+  
+var socket = new WebSocket('wss://p3-websockets-WilliamCheng12345-williamcheng1998980950.codeanyapp.com/ws/draw');
+socket.onmessage = function(receivedMessage) {
+	// do something when you receive a message){
+    total[0] = total[0] + parseInt(receivedMessage.data[0]);
+    localStorage.setItem("total[0]", total[0]);
+    total[1] = total[1] + parseInt(receivedMessage.data[2]);
+    localStorage.setItem("total[1]", total[1]);
+    total[2] = total[2] + parseInt(receivedMessage.data[4]);
+    localStorage.setItem("total[2]", total[2]);
+    total[3] = total[3] + parseInt(receivedMessage.data[6]);
+    localStorage.setItem("total[3]", total[3]);
+}
+    socket.onclose = function(e) {
+    console.error('Chat socket closed unexpectedly');
+};
+  
+</script>
+  <body>
+   <div class="header">
+  <h1>Democra-groceries</h1>
+  <p>Grocery Assistant</p>
+  
+  <h1 style="color: green; font-size:48px">
+      Frosted Flakes
+      <script type="text/javascript">
+        document.write(total[0])
+      </script>
+    </h1>
+    
+        <h1 style="color: red; font-size:48px">
+      Frutiy Pebbles
+      <script type="text/javascript">
+        document.write(total[1])
+      </script>
+    </h1>
+    
+       <h1 style="color: blue; font-size:48px">
+     Reeses Puffs
+      <script type="text/javascript">
+        document.write(total[2])
+      </script>
+    </h1>
+    
+        <h1 style="color: purple; font-size:48px">
+      Cheerios
+      <script type="text/javascript">
+        document.write(total[3])
+      </script>
+    </h1>
+    </div>
+   
+</body>
+</html>
